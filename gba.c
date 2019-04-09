@@ -12,7 +12,9 @@ void waitForVBlank(void) {
     // Write a while loop that keeps going until we're in vBlank:
 
     // Finally, increment the vBlank counter:
-
+    while (*SCANLINECOUNTER > 160);
+    while (*SCANLINECOUNTER < 160);
+    vBlankCounter++;
 }
 
 static int __qran_seed= 42;
@@ -26,10 +28,7 @@ int randint(int min, int max) {
 }
 
 void setPixel(int x, int y, u16 color) {
-    // TA-TODO: IMPLEMENT
-    UNUSED(x);
-    UNUSED(y);
-    UNUSED(color);
+    videoBuffer[x * WIDTH + y] = color;
 }
 
 void drawRectDMA(int x, int y, int width, int height, volatile u16 color) {
@@ -42,19 +41,18 @@ void drawRectDMA(int x, int y, int width, int height, volatile u16 color) {
 }
 
 void drawFullScreenImageDMA(u16 *image) {
-    // TA-TODO: IMPLEMENT
     DMA[3].src = image;
     DMA[3].dst = videoBuffer;
-    DMA[3].cnt = 240 * 160 | DMA_SOURCE_INCREMENT | DMA_DESTINATION_INCREMENT | DMA_ON;
+    DMA[3].cnt = WIDTH * HEIGHT | DMA_SOURCE_INCREMENT | DMA_DESTINATION_INCREMENT | DMA_ON;
 }
 
 void drawImageDMA(int x, int y, int width, int height, u16 *image) {
     // TA-TODO: IMPLEMENT
-    UNUSED(x);
-    UNUSED(y);
-    UNUSED(width);
-    UNUSED(height);
-    UNUSED(image);
+    for (int i = 0; i < height; i++) {
+        DMA[3].src = image + i * width;
+        DMA[3].dst = videoBuffer + (i + x) * WIDTH + y;
+        DMA[3].cnt = width | DMA_ON | DMA_DESTINATION_INCREMENT | DMA_SOURCE_INCREMENT;
+    }
 }
 
 void fillScreenDMA(volatile u16 color) {

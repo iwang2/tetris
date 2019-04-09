@@ -1,10 +1,31 @@
 #include "logic.h"
 
+int max_piece_height = 0;
+
 void initializeAppState(AppState* appState) {
     // TA-TODO: Initialize everything that's part of this AppState struct here.
     // Suppose the struct contains random values, make sure everything gets
     // the value it should have when the app begins.
-    UNUSED(appState);
+    appState->gameOver = 0;
+    appState->points = 0;
+    for (int i = 0; i < 20; i++) {
+        appState->widths[i] = 0;
+    }
+    for (int i = 0; i < 10; i++) {
+        appState->heights[i] = 0;
+    }
+    for (int r = 0; r < 20; r++) {
+        for (int c = 0; c < 10; c++) {
+            appState->board[r][c] = 0;
+        }
+    }
+    Block *block = appState->current;
+    block->x = BOARD_WIDTH / 2 - 2;
+    block->y = BOARD_HEIGHT;
+    block->width = 2;
+    block->length = 2;
+    
+    appState->dropped = 0;
 }
 
 // TA-TODO: Add any process functions for sub-elements of your app here.
@@ -40,11 +61,66 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
      * Modifying the currentAppState will mean the undraw function will not be able
      * to undraw it later.
      */
-
-    AppState nextAppState = *currentAppState;
-
+    
     UNUSED(keysPressedBefore);
     UNUSED(keysPressedNow);
 
+    AppState nextAppState = *currentAppState;
+    Block *block = (&nextAppState)->current;
+    if (vBlankCounter % 30 == 0) {
+        if (currentAppState->dropped == 1) {
+            (&nextAppState)->dropped = 0;
+            (&nextAppState)->current->x = BOARD_WIDTH / 2 - 2;
+            (&nextAppState)->current->y = BOARD_HEIGHT;
+        } else if (drop_piece(block, (&nextAppState)->heights)) {
+            place_piece(block, (&nextAppState)->board, (&nextAppState)->widths, (&nextAppState)->heights);
+            (&nextAppState)->dropped = 1;
+        }
+    }
     return nextAppState;
+}
+
+int drop_piece(Block *block, int *heights) {
+    block->y--;
+    if (heights[block->x] == block->y || 
+        heights[block->x + 1] == block->y) return 1;
+    return 0;
+}
+
+void place_piece(Block *block, int **board, int *widths, int *heights) {
+    int x = block->x;
+    int y = block->y;
+
+    set_board(x, y, board, widths, heights);
+    set_board(x + 1, y, board, widths, heights);
+    set_board(x, y + 1, board, widths, heights);
+    set_board(x + 1, y + 1, board, widths, heights);
+
+    if (y + 1 > max_piece_height) 
+        max_piece_height = y + 1;
+    if (widths[y + 1] == BOARD_WIDTH)
+        clear_line(block, y + 1, board, widths, heights);
+    if (widths[y] == BOARD_WIDTH) 
+        clear_line(block, y, board, widths, heights);
+}
+
+void set_board(int x, int y, int **board, int *widths, int *heights) {
+    board[x][y] = 1;
+    widths[y]++;
+    heights[x]++;
+}
+
+void clear_line(Block *block, int y, int **board, int *widths, int *heights) {
+    for (int i = y; i < max_piece_height; i++) {
+        for (int x = 0; x < BOARD_WIDTH; x++) {
+            board[x][i] = board[x][i + 1];
+        }
+        widths[i] = widths[i + 1];
+    }
+    for (int i = 0; i < BOARD_WIDTH; i++) {
+        board[i][max_piece_height] = 0;
+        heights[i]--;
+    }
+    max_piece_height--;
+    block->y--;
 }
