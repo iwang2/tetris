@@ -81,6 +81,10 @@ int main(void) {
                 // Now set the current state as the next state for the next iter.
                 currentAppState = nextAppState;
 
+                if (KEY_JUST_PRESSED(BUTTON_SELECT, currentButtons, previousButtons)) {
+                    state = START;
+                }
+
                 break;
             case APP_EXIT:
                 // Wait for VBlank

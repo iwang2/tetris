@@ -124,7 +124,7 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
     } else if (!currentAppState->dropped && KEY_JUST_PRESSED(BUTTON_RIGHT, keysPressedNow, keysPressedBefore)) {
         move_block_right(block, (&nextAppState)->board);
     }
-    if (!(vBlankCounter % 20)) {
+    if (!(vBlankCounter % 10)) {
         if (currentAppState->dropped == 1) {
             if (block->y <= 1) {
                 (&nextAppState)->gameOver = 1;

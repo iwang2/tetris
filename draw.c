@@ -17,12 +17,12 @@
 // static void drawFood(Food* food);
 
 void drawBlock(Block block) {
-    drawImageDMA(block.y * SPACE, block.x * SPACE, SPACE * 2, SPACE * 2, o)
+    drawImageDMA(block.y * SPACE, block.x * SPACE + BOARD_OFFSET, SPACE * 2, SPACE * 2, o)
     ;
 }
 
 void eraseBlock(Block block) {
-    drawRectDMA(block.y * SPACE, block.x * SPACE, SPACE * 2, SPACE * 2, BLACK);
+    drawRectDMA(block.y * SPACE, block.x * SPACE + BOARD_OFFSET, SPACE * 2, SPACE * 2, BLACK);
 }
 
 void drawClearLines(int y) {
@@ -37,7 +37,7 @@ void drawClearLines(int y) {
 // including the background and whatnot.
 void fullDrawAppState(AppState *state) {
     fillScreenDMA(WHITE);
-    drawRectDMA(0, 0, BOARD_WIDTH * SPACE, BOARD_HEIGHT * SPACE, BLACK);
+    drawRectDMA(0, 0 + BOARD_OFFSET, BOARD_WIDTH * SPACE, BOARD_HEIGHT * SPACE, BLACK);
     UNUSED(state);
 }
 

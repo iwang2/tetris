@@ -1,7 +1,7 @@
 /*
  * Exported with nin10kit v1.7
  * Invocation command was nin10kit --mode=3 --resize=240x160 start start.png 
- * Time-stamp: Thursday 04/11/2019, 20:05:42
+ * Time-stamp: Thursday 04/11/2019, 22:20:00
  * 
  * Image Information
  * -----------------
