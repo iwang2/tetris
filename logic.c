@@ -43,6 +43,17 @@ void place_piece(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH], int *widths
         clear_line(block, y + 1, board, widths, max_piece_height);
 }
 
+void move_block_right(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH]) {
+    if (block->x + 1 < BOARD_WIDTH && !board[block->y][block->x + 2]) {
+        block->x++;
+    }
+}
+void move_block_left(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH]) {
+    if (block->x > 0 && !board[block->y][block->x - 1]) {
+        block->x--;
+    }
+}
+
 void initializeAppState(AppState* appState) {
     // TA-TODO: Initialize everything that's part of this AppState struct here.
     // Suppose the struct contains random values, make sure everything gets
@@ -79,14 +90,20 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
      * you want to process button every frame regardless (otherwise you will
      * miss inputs.)
      */
-    
-    UNUSED(keysPressedBefore);
-    UNUSED(keysPressedNow);
 
     AppState nextAppState = *currentAppState;
     Block *block = &(&nextAppState)->current;
+
+    if (!currentAppState->dropped && KEY_JUST_PRESSED(BUTTON_LEFT, keysPressedNow, keysPressedBefore)) {
+        move_block_left(block, (&nextAppState)->board);
+    } else if (!currentAppState->dropped && KEY_JUST_PRESSED(BUTTON_RIGHT, keysPressedNow, keysPressedBefore)) {
+        move_block_right(block, (&nextAppState)->board);
+    }
     if (!(vBlankCounter % 30)) {
         if (currentAppState->dropped == 1) {
+            if (block->y <= 1) {
+                (&nextAppState)->gameOver = 1;
+            }
             (&nextAppState)->dropped = 0;
             block->x = BOARD_WIDTH / 2 - 1;
             block->y = 0;

@@ -17,7 +17,6 @@
 // static void drawFood(Food* food);
 
 void drawBlock(Block block) {
-    //drawRectDMA(block.y * SPACE, block.x * SPACE, SPACE * 2, SPACE * 2, WHITE);
     drawImageDMA(block.y * SPACE, block.x * SPACE, SPACE * 2, SPACE * 2, o)
     ;
 }
