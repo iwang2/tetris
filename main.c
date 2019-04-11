@@ -60,17 +60,22 @@ int main(void) {
                 state = APP;
                 break;
             case APP:
+                //printf("APP\n");
                 // Process the app for one frame, store the next state
                 nextAppState = processAppState(&currentAppState, previousButtons, currentButtons);
+                //printf("processAppState\n");
 
                 // Wait for VBlank before we do any drawing.
                 waitForVBlank();
+                //printf("VBlank\n");
 
                 // Undraw the previous state
                 undrawAppState(&currentAppState);
+                //printf("undrawAppState\n");
 
                 // Draw the current state
                 drawAppState(&nextAppState);
+                //printf("drawAppState\n");
 
                 // Now set the current state as the next state for the next iter.
                 currentAppState = nextAppState;

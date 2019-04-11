@@ -3,9 +3,7 @@
 
 int drop_piece(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH]) {
     block->y++;
-    if (board[block->y + 2][block->x] == 1 || board[block->y + 2][block->x + 1] == 1) return 1;
-    /*if (heights[block->x] == block->y + 2 || 
-        heights[block->x + 1] == block->y + 2) return 1;*/
+    if (board[block->y + 2][block->x] == 1 || board[block->y + 2][block->x + 1] == 1 || block->y + 2 == BOARD_HEIGHT) return 1;
     return 0;
 }
 
@@ -21,20 +19,6 @@ void clear_line(Block *block, int y, int board[BOARD_HEIGHT][BOARD_WIDTH], int *
     }
     (*max_piece_height)++;
     block->y--;
-    /*
-    for (int i = y; i < *max_piece_height; i++) {
-        for (int x = 0; x < BOARD_WIDTH; x++) {
-            board[x][i] = board[x][i + 1];
-        }
-        widths[i] = widths[i + 1];
-    }
-    for (int i = 0; i < BOARD_WIDTH; i++) {
-        board[i][*max_piece_height] = 0;
-        heights[i]--;
-    }
-    *max_piece_height--;
-    block->y--;
-    */
 }
 
 void set_board(int x, int y, int board[BOARD_HEIGHT][BOARD_WIDTH], int *widths) {
@@ -68,36 +52,19 @@ void initializeAppState(AppState* appState) {
     for (int i = 0; i < BOARD_HEIGHT; i++) {
         appState->widths[i] = 0;
     }
-    /*for (int i = 0; i < 10; i++) {
-        appState->heights[i] = BOARD_HEIGHT - 1;
-    }*/
     for (int r = 0; r < BOARD_HEIGHT; r++) {
         for (int c = 0; c < BOARD_WIDTH; c++) {
             appState->board[r][c] = 0;
         }
     }
-    Block *block = appState->current;
-    /*block->x = BOARD_WIDTH / 2 - 2;
-    block->y = BOARD_HEIGHT - 2;
-    block->width = 2;
-    block->length = 2;*/
-    block->x = BOARD_WIDTH / 2 - 2;
+    Block *block = &appState->current;
+    block->x = BOARD_WIDTH / 2 - 1;
     block->y = 0;
     
     appState->dropped = 0;
     appState->max_piece_height = BOARD_HEIGHT - 1;
 }
 
-// TA-TODO: Add any process functions for sub-elements of your app here.
-// For example, for a snake game, you could have a processSnake function
-// or a createRandomFood function or a processFoods function.
-//
-// e.g.:
-// static Snake processSnake(Snake* currentSnake);
-// static void generateRandomFoods(AppState* currentAppState, AppState* nextAppState);
-
-// This function processes your current app state and returns the new (i.e. next)
-// state of your application.
 AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 keysPressedNow) {
     /* TA-TODO: Do all of your app processing here. This function gets called
      * every frame.
@@ -111,36 +78,25 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
      * and the modulus % operator to do things once every (n) frames. Note that
      * you want to process button every frame regardless (otherwise you will
      * miss inputs.)
-     *
-     * Do not do any drawing here.
-     *
-     * TA-TODO: VERY IMPORTANT! READ THIS PART.
-     * You need to perform all calculations on the currentAppState passed to you,
-     * and perform all state updates on the nextAppState state which we define below
-     * and return at the end of the function. YOU SHOULD NOT MODIFY THE CURRENTSTATE.
-     * Modifying the currentAppState will mean the undraw function will not be able
-     * to undraw it later.
      */
     
     UNUSED(keysPressedBefore);
     UNUSED(keysPressedNow);
 
     AppState nextAppState = *currentAppState;
-    Block *block = (&nextAppState)->current;
-    if (vBlankCounter % 30 == 0) {
+    Block *block = &(&nextAppState)->current;
+    if (!(vBlankCounter % 30)) {
         if (currentAppState->dropped == 1) {
             (&nextAppState)->dropped = 0;
-            (&nextAppState)->current->x = BOARD_WIDTH / 2 - 2;
-            (&nextAppState)->current->y = 0;
+            block->x = BOARD_WIDTH / 2 - 1;
+            block->y = 0;
         } else if (drop_piece(block, (&nextAppState)->board)) {
             place_piece(block, 
                 (&nextAppState)->board, 
-                (&nextAppState)->widths, 
-                //(&nextAppState)->heights, 
+                (&nextAppState)->widths,
                 &((&nextAppState)->max_piece_height));
             (&nextAppState)->dropped = 1;
         }
     }
-    (&nextAppState)->previous = currentAppState->current;
     return nextAppState;
 }

@@ -5,14 +5,6 @@ volatile unsigned short *videoBuffer = (volatile unsigned short *) 0x6000000;
 u32 vBlankCounter = 0;
 
 void waitForVBlank(void) {
-    // TA-TODO: IMPLEMENT
-
-    // Write a while loop that loops until we're NOT in vBlank anymore:
-    // (This prevents counting one VBlank more than once if your app is too fast)
-
-    // Write a while loop that keeps going until we're in vBlank:
-
-    // Finally, increment the vBlank counter:
     while (*SCANLINECOUNTER > 160);
     while (*SCANLINECOUNTER < 160);
     vBlankCounter++;
@@ -35,9 +27,9 @@ void setPixel(int x, int y, volatile u16 color) {
 void drawRectDMA(int x, int y, int width, int height, volatile u16 color) {
     // TA-TODO: IMPLEMENT
     for (int r = x; r < x + height; r++) {
-       for (int c = y; c < y + width; c++) {
-           setPixel(r, c, color);
-       }
+        DMA[3].src = &color;
+        DMA[3].dst = videoBuffer + r * WIDTH + y;
+        DMA[3].cnt = width | DMA_SOURCE_FIXED | DMA_DESTINATION_INCREMENT | DMA_ON;
     }
 }
 

@@ -18,26 +18,12 @@ typedef struct {
     int widths[BOARD_HEIGHT]; // holds the width of each row; for clear_rows
     //int heights[BOARD_WIDTH]; // holds the height of each column by index; for dropping pieces
     int board[20][10]; // origin at bottom left
-    Block *previous;
-    Block *current; // only O-blocks for now
+    Block current; // only O-blocks for now
     //Block *next;
     int dropped;
     int max_piece_height;
 } AppState;
 
-/*
-* TA-TODO: Add any additional structs that you need for your app.
-*
-* For example, for a Snake game, one could be:
-*
-* typedef struct {
-*   int heading;
-*   int length;
-*   int x;
-*   int y;
-* } Snake;
-*
-*/
 /*int BLOCKS[7][4][4][4] = {
     { // I
         {
