@@ -25,10 +25,17 @@ void eraseBlock(Block block) {
     drawRectDMA(block.y * SPACE, block.x * SPACE, SPACE * 2, SPACE * 2, BLACK);
 }
 
+void drawClearLines(int y) {
+    for (int r = (y + 1) * SPACE; r > 1 * SPACE; r++) {
+        DMA[3].src = videoBuffer + r - 2 * SPACE;
+        DMA[3].dst = videoBuffer + r;
+        DMA[3].cnt = BOARD_WIDTH * SPACE | DMA_ON | DMA_SOURCE_INCREMENT | DMA_DESTINATION_INCREMENT;
+    }
+}
+
 // This function will be used to draw everything about the app
 // including the background and whatnot.
 void fullDrawAppState(AppState *state) {
-    // TA-TODO: IMPLEMENT.
     fillScreenDMA(WHITE);
     drawRectDMA(0, 0, BOARD_WIDTH * SPACE, BOARD_HEIGHT * SPACE, BLACK);
     UNUSED(state);
@@ -46,6 +53,5 @@ void undrawAppState(AppState *state) {
 // This function will be used to draw things that might have moved in a frame.
 // For example, in a Snake game, draw the snake, the food, the score.
 void drawAppState(AppState *state) {
-    // TA-TODO: IMPLEMENT.
     drawBlock(state->current);
 }

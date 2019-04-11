@@ -2,9 +2,15 @@
 
 
 int drop_piece(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH]) {
-    if (board[block->y + 2][block->x] == 1 || board[block->y + 2][block->x + 1] == 1 || block->y + 2 == BOARD_HEIGHT) return 1;
+    if (board[block->y + 2][block->x] == 1 ||
+            board[block->y + 2][block->x + 1] == 1 || 
+            block->y + 2 == BOARD_HEIGHT) 
+        return 1;
     block->y++;
-    if (board[block->y + 2][block->x] == 1 || board[block->y + 2][block->x + 1] == 1 || block->y + 2 == BOARD_HEIGHT) return 1;
+    if (board[block->y + 2][block->x] == 1 
+            || board[block->y + 2][block->x + 1] == 1 
+            || block->y + 2 == BOARD_HEIGHT) 
+        return 1;
     return 0;
 }
 
@@ -27,7 +33,18 @@ void set_board(int x, int y, int board[BOARD_HEIGHT][BOARD_WIDTH], int *widths) 
     widths[y]++;
 }
 
-void place_piece(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH], int *widths, int *max_piece_height) {
+/*
+void clear_lines(int y, int board[BOARD_HEIGHT][BOARD_WIDTH], int widths[BOARD_HEIGHT], int *cleared) {
+    for (int r = y + 1; r > 1; r--) {
+        for (int c = 0; c < BOARD_WIDTH; c++) {
+            board[r][c] = board[r - 2][c];
+        }
+        widths[r] = widths[r - 2];
+    }
+    *cleared = y;
+}*/
+
+void place_piece(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH], int *widths/*, int *cleared*/) {
     int x = block->x;
     int y = block->y;
 
@@ -36,21 +53,28 @@ void place_piece(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH], int *widths
     set_board(x, y + 1, board, widths);
     set_board(x + 1, y + 1, board, widths);
 
+    /*if (widths[y] == BOARD_WIDTH) {
+        clear_lines(y, board, widths, cleared);
+    }
     if (y < *max_piece_height) 
         *max_piece_height = y;
-    if (widths[y] == BOARD_WIDTH) 
+    if (widths[y] == BOARD_WIDTH)
         clear_line(block, y, board, widths, max_piece_height);
     if (widths[y + 1] == BOARD_WIDTH)
-        clear_line(block, y + 1, board, widths, max_piece_height);
+        clear_line(block, y + 1, board, widths, max_piece_height);*/
 }
 
 void move_block_right(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH]) {
-    if (block->x + 2 < BOARD_WIDTH && !board[block->y][block->x + 2] && !board[block->y + 1][block->x + 2]) {
+    if (block->x + 2 < BOARD_WIDTH && 
+            !board[block->y][block->x + 2] && 
+            !board[block->y + 1][block->x + 2]) {
         block->x++;
     }
 }
 void move_block_left(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH]) {
-    if (block->x > 0 && !board[block->y][block->x - 1]) {
+    if (block->x > 0 && 
+            !board[block->y][block->x - 1] && 
+            !board[block->y + 1][block->x - 1]) {
         block->x--;
     }
 }
@@ -74,7 +98,7 @@ void initializeAppState(AppState* appState) {
     block->y = 0;
     
     appState->dropped = 0;
-    appState->max_piece_height = BOARD_HEIGHT - 1;
+    appState->cleared = 0;
 }
 
 AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 keysPressedNow) {
@@ -100,7 +124,7 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
     } else if (!currentAppState->dropped && KEY_JUST_PRESSED(BUTTON_RIGHT, keysPressedNow, keysPressedBefore)) {
         move_block_right(block, (&nextAppState)->board);
     }
-    if (!(vBlankCounter % 30)) {
+    if (!(vBlankCounter % 20)) {
         if (currentAppState->dropped == 1) {
             if (block->y <= 1) {
                 (&nextAppState)->gameOver = 1;
@@ -109,10 +133,8 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
             block->x = BOARD_WIDTH / 2 - 1;
             block->y = 0;
         } else if (drop_piece(block, (&nextAppState)->board)) {
-            place_piece(block, 
-                (&nextAppState)->board, 
-                (&nextAppState)->widths,
-                &((&nextAppState)->max_piece_height));
+            place_piece(block, (&nextAppState)->board, 
+                (&nextAppState)->widths/*, &((&nextAppState)->cleared)*/);
             (&nextAppState)->dropped = 1;
         }
     }

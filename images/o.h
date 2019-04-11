@@ -1,7 +1,7 @@
 /*
  * Exported with nin10kit v1.7
  * Invocation command was nin10kit --mode=3 --resize=16x16 o o.png 
- * Time-stamp: Monday 04/08/2019, 19:18:41
+ * Time-stamp: Thursday 04/11/2019, 21:26:49
  * 
  * Image Information
  * -----------------

@@ -21,7 +21,8 @@ typedef struct {
     Block current; // only O-blocks for now
     //Block *next;
     int dropped;
-    int max_piece_height;
+    //int max_piece_height;
+    int cleared;
 } AppState;
 
 /*int BLOCKS[7][4][4][4] = {
