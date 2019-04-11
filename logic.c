@@ -2,6 +2,7 @@
 
 
 int drop_piece(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH]) {
+    if (board[block->y + 2][block->x] == 1 || board[block->y + 2][block->x + 1] == 1 || block->y + 2 == BOARD_HEIGHT) return 1;
     block->y++;
     if (board[block->y + 2][block->x] == 1 || board[block->y + 2][block->x + 1] == 1 || block->y + 2 == BOARD_HEIGHT) return 1;
     return 0;
@@ -44,7 +45,7 @@ void place_piece(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH], int *widths
 }
 
 void move_block_right(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH]) {
-    if (block->x + 1 < BOARD_WIDTH && !board[block->y][block->x + 2]) {
+    if (block->x + 2 < BOARD_WIDTH && !board[block->y][block->x + 2] && !board[block->y + 1][block->x + 2]) {
         block->x++;
     }
 }

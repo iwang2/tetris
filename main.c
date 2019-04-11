@@ -64,6 +64,11 @@ int main(void) {
                 // Process the app for one frame, store the next state
                 nextAppState = processAppState(&currentAppState, previousButtons, currentButtons);
 
+                // Check if the app is exiting. If it is, then go to the exit state.
+                if (nextAppState.gameOver) {
+                    state = APP_EXIT;
+                }
+
                 // Wait for VBlank before we do any drawing.
                 waitForVBlank();
 
@@ -75,11 +80,6 @@ int main(void) {
 
                 // Now set the current state as the next state for the next iter.
                 currentAppState = nextAppState;
-
-                // Check if the app is exiting. If it is, then go to the exit state.
-                if (nextAppState.gameOver) {
-                    state = APP_EXIT;
-                }
 
                 break;
             case APP_EXIT:
