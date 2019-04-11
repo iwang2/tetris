@@ -1,6 +1,64 @@
 #include "logic.h"
 
 
+int drop_piece(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH]) {
+    block->y++;
+    if (board[block->y + 2][block->x] == 1 || board[block->y + 2][block->x + 1] == 1) return 1;
+    /*if (heights[block->x] == block->y + 2 || 
+        heights[block->x + 1] == block->y + 2) return 1;*/
+    return 0;
+}
+
+void clear_line(Block *block, int y, int board[BOARD_HEIGHT][BOARD_WIDTH], int *widths, int *max_piece_height) {
+    for (int r = y; r >= *max_piece_height; r++) {
+        for (int c = 0; c < BOARD_WIDTH; c++) {
+            board[r][c] = board[r - 1][c];
+        }
+        widths[r] = widths[r - 1];
+    }
+    for (int c = 0; c < BOARD_WIDTH; c++) {
+        board[*max_piece_height][c] = 0;
+    }
+    (*max_piece_height)++;
+    block->y--;
+    /*
+    for (int i = y; i < *max_piece_height; i++) {
+        for (int x = 0; x < BOARD_WIDTH; x++) {
+            board[x][i] = board[x][i + 1];
+        }
+        widths[i] = widths[i + 1];
+    }
+    for (int i = 0; i < BOARD_WIDTH; i++) {
+        board[i][*max_piece_height] = 0;
+        heights[i]--;
+    }
+    *max_piece_height--;
+    block->y--;
+    */
+}
+
+void set_board(int x, int y, int board[BOARD_HEIGHT][BOARD_WIDTH], int *widths) {
+    board[y][x] = 1;
+    widths[y]++;
+}
+
+void place_piece(Block *block, int board[BOARD_HEIGHT][BOARD_WIDTH], int *widths, int *max_piece_height) {
+    int x = block->x;
+    int y = block->y;
+
+    set_board(x, y, board, widths);
+    set_board(x + 1, y, board, widths);
+    set_board(x, y + 1, board, widths);
+    set_board(x + 1, y + 1, board, widths);
+
+    if (y < *max_piece_height) 
+        *max_piece_height = y;
+    if (widths[y] == BOARD_WIDTH) 
+        clear_line(block, y, board, widths, max_piece_height);
+    if (widths[y + 1] == BOARD_WIDTH)
+        clear_line(block, y + 1, board, widths, max_piece_height);
+}
+
 void initializeAppState(AppState* appState) {
     // TA-TODO: Initialize everything that's part of this AppState struct here.
     // Suppose the struct contains random values, make sure everything gets
@@ -85,61 +143,4 @@ AppState processAppState(AppState *currentAppState, u32 keysPressedBefore, u32 k
     }
     (&nextAppState)->previous = currentAppState->current;
     return nextAppState;
-}
-
-int drop_piece(Block *block, int **board) {
-    block->y++;
-    if (board[block->y + 2][block->x] == 1 || board[block->y + 2][block->x + 1] == 1) return 1;
-    /*if (heights[block->x] == block->y + 2 || 
-        heights[block->x + 1] == block->y + 2) return 1;*/
-    return 0;
-}
-
-void place_piece(Block *block, int **board, int *widths, int *max_piece_height) {
-    int x = block->x;
-    int y = block->y;
-
-    set_board(x, y, board, widths);
-    set_board(x + 1, y, board, widths);
-    set_board(x, y + 1, board, widths);
-    set_board(x + 1, y + 1, board, widths);
-
-    if (y < *max_piece_height) 
-        *max_piece_height = y;
-    if (widths[y] == BOARD_WIDTH) 
-        clear_line(block, y, board, widths, max_piece_height);
-    if (widths[y + 1] == BOARD_WIDTH)
-        clear_line(block, y + 1, board, widths, max_piece_height);
-}
-
-void set_board(int x, int y, int **board, int *widths) {
-    board[y][x] = 1;
-    widths[y]++;
-}
-
-void clear_line(Block *block, int y, int **board, int *widths, int *max_piece_height) {
-    for (int r = y; r >= *max_piece_height; r++) {
-        for (int c = 0; c < BOARD_WIDTH; c++) {
-            board[r][c] = board[r - 1][c];
-        }
-        widths[r] = widths[r - 1];
-    }
-    for (int c = 0; c < BOARD_WIDTH; c++) {
-        board[*max_piece_height][c] = 0;
-    }
-    *max_piece_height++;
-    /*
-    for (int i = y; i < *max_piece_height; i++) {
-        for (int x = 0; x < BOARD_WIDTH; x++) {
-            board[x][i] = board[x][i + 1];
-        }
-        widths[i] = widths[i + 1];
-    }
-    for (int i = 0; i < BOARD_WIDTH; i++) {
-        board[i][*max_piece_height] = 0;
-        heights[i]--;
-    }
-    *max_piece_height--;
-    block->y--;
-    */
 }

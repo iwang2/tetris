@@ -28,27 +28,26 @@ int randint(int min, int max) {
     return (qran()*(max-min)>>15)+min;
 }
 
-void setPixel(int x, int y, u16 color) {
+void setPixel(int x, int y, volatile u16 color) {
     videoBuffer[x * WIDTH + y] = color;
 }
 
 void drawRectDMA(int x, int y, int width, int height, volatile u16 color) {
     // TA-TODO: IMPLEMENT
-    for (int r = y; r < y + height; r++) {
-        for (int c = x; c < x + width; c++) {
-            setPixel(r, c, color);
-        }
+    for (int r = x; r < x + height; r++) {
+       for (int c = y; c < y + width; c++) {
+           setPixel(r, c, color);
+       }
     }
 }
 
-void drawFullScreenImageDMA(u16 *image) {
+void drawFullScreenImageDMA(const u16 *image) {
     DMA[3].src = image;
     DMA[3].dst = videoBuffer;
     DMA[3].cnt = WIDTH * HEIGHT | DMA_SOURCE_INCREMENT | DMA_DESTINATION_INCREMENT | DMA_ON;
 }
 
-// assume bottom-left origin for x and y
-void drawImageDMA(int x, int y, int width, int height, u16 *image) {
+void drawImageDMA(int x, int y, int width, int height, const u16 *image) {
     // TA-TODO: IMPLEMENT
     for (int i = 0; i < height; i++) {
         DMA[3].src = image + i * width;
@@ -61,7 +60,7 @@ void fillScreenDMA(volatile u16 color) {
     // TA-TODO: IMPLEMENT
     DMA[3].src = &color;
     DMA[3].dst = videoBuffer;
-    DMA[3].cnt = 240 * 160 | DMA_SOURCE_FIXED | DMA_DESTINATION_INCREMENT | DMA_ON;
+    DMA[3].cnt = WIDTH * HEIGHT | DMA_SOURCE_FIXED | DMA_DESTINATION_INCREMENT | DMA_ON;
 }
 
 void drawChar(int col, int row, char ch, u16 color) {

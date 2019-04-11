@@ -5,6 +5,13 @@
 #include "lib.h"
 
 typedef struct {
+    int x; // left-most
+    int y; // top-most
+    //int width;
+    //int length;
+} Block;
+
+typedef struct {
     // Store whether or not the game is over in this member:
     int gameOver;
     int points;
@@ -31,12 +38,6 @@ typedef struct {
 * } Snake;
 *
 */
-typedef struct {
-    int x; // left-most
-    int y; // top-most
-    //int width;
-    //int length;
-} Block;
 /*int BLOCKS[7][4][4][4] = {
     { // I
         {

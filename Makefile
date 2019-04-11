@@ -8,14 +8,14 @@
 # The name of your desired application
 # This should be a just a name i.e MyFirstGBAGame
 # No SPACES AFTER THE NAME.
-PROGNAME = Game
+PROGNAME = Sad_Tetris
 
 # TA-TODO: Add the C files you want compiled here (replace extension with .o)
 # Here you must put a list of all of the object files
 # that will be compiled into your program. For example
 # if you have main.c and myLib.c then in the following
 # line you would put main.o and myLib.o
-OFILES = gba.o font.o draw.o logic.o main.o images/garbage.o
+OFILES = gba.o font.o draw.o logic.o main.o images/o.o
 
 ################################################################################
 # These are various settings used to make the GBA toolchain work
