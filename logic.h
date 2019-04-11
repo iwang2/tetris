@@ -9,11 +9,13 @@ typedef struct {
     int gameOver;
     int points;
     int widths[BOARD_HEIGHT]; // holds the width of each row; for clear_rows
-    int heights[BOARD_WIDTH]; // holds the height of each column; for dropping pieces
-    int board[10][20];
+    //int heights[BOARD_WIDTH]; // holds the height of each column by index; for dropping pieces
+    int board[20][10]; // origin at bottom left
+    Block *previous;
     Block *current; // only O-blocks for now
     //Block *next;
     int dropped;
+    int max_piece_height;
 } AppState;
 
 /*
@@ -31,9 +33,9 @@ typedef struct {
 */
 typedef struct {
     int x; // left-most
-    int y; // bottom-most
-    int width;
-    int length;
+    int y; // top-most
+    //int width;
+    //int length;
 } Block;
 /*int BLOCKS[7][4][4][4] = {
     { // I

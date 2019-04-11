@@ -16,13 +16,19 @@
 // static void drawFood(Food* food);
 
 void drawBlock(Block *block) {
-    drawImageDMA(block->x, block->y, 16, 16, o);
+    drawImageDMA(block->x * SPACE, block->y * SPACE, SPACE * 2, SPACE * 2, o);
+}
+
+void eraseBlock(Block *block) {
+    drawRectDMA(block->x * SPACE, block->y * SPACE, SPACE * 2, SPACE * 2, BLACK);
 }
 
 // This function will be used to draw everything about the app
 // including the background and whatnot.
 void fullDrawAppState(AppState *state) {
     // TA-TODO: IMPLEMENT.
+    fillScreenDMA(WHITE);
+    drawRectDMA(0, 0, BOARD_WIDTH * SPACE, BOARD_HEIGHT * SPACE, BLACK);
     UNUSED(state);
 }
 
@@ -30,12 +36,14 @@ void fullDrawAppState(AppState *state) {
 // move in a frame. E.g. in a Snake game, erase the Snake, the food & the score.
 void undrawAppState(AppState *state) {
     // TA-TODO: IMPLEMENT.
-    UNUSED(state);
+    if (state->dropped == 0) {
+        eraseBlock(state->previous);
+    }
 }
 
 // This function will be used to draw things that might have moved in a frame.
 // For example, in a Snake game, draw the snake, the food, the score.
 void drawAppState(AppState *state) {
     // TA-TODO: IMPLEMENT.
-    UNUSED(state);
+    drawBlock(state->current);
 }

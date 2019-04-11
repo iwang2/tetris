@@ -1,4 +1,5 @@
 #include "gba.h"
+#include "lib.h"
 
 volatile unsigned short *videoBuffer = (volatile unsigned short *) 0x6000000;
 u32 vBlankCounter = 0;
@@ -33,11 +34,11 @@ void setPixel(int x, int y, u16 color) {
 
 void drawRectDMA(int x, int y, int width, int height, volatile u16 color) {
     // TA-TODO: IMPLEMENT
-    UNUSED(x);
-    UNUSED(y);
-    UNUSED(width);
-    UNUSED(height);
-    UNUSED(color);
+    for (int r = y; r < y + height; r++) {
+        for (int c = x; c < x + width; c++) {
+            setPixel(r, c, color);
+        }
+    }
 }
 
 void drawFullScreenImageDMA(u16 *image) {
@@ -46,6 +47,7 @@ void drawFullScreenImageDMA(u16 *image) {
     DMA[3].cnt = WIDTH * HEIGHT | DMA_SOURCE_INCREMENT | DMA_DESTINATION_INCREMENT | DMA_ON;
 }
 
+// assume bottom-left origin for x and y
 void drawImageDMA(int x, int y, int width, int height, u16 *image) {
     // TA-TODO: IMPLEMENT
     for (int i = 0; i < height; i++) {
