@@ -1,6 +1,7 @@
 #include "gba.h"
 #include "logic.h"
 #include "draw.h"
+#include "lib.h"
 #include "images/start.h"
 #include "images/end.h"
 
@@ -104,6 +105,5 @@ int main(void) {
         // Store the current state of the buttons
         previousButtons = currentButtons;
     }
-
     return 0;
 }
